@@ -1,8 +1,6 @@
 # FLASK_APP=server.py flask run
-
 from flask import Flask
 from flask import request
-from flask_cors import CORS, cross_origin
 import json
 from hanziconv import HanziConv
 
@@ -10,16 +8,13 @@ import tools
 import zi_embedding, visual_embedding, word_embedding
 
 app = Flask(__name__)
-app.config['CORS_HEADERS'] = 'Content-Type'
-
-# cors = CORS(app, resources={r"/chineseEmbeddings": {"origins": "*"}})
 
 @app.route("/")
 def hello():
     return "Chinese Embeddings"
 
 @app.route('/chineseEmbeddings', methods=['GET'])
-# @cross_origin(origin='localhost',headers=['Content- Type','Authorization'])
+@cross_origin(origin='localhost',headers=['Content- Type','Authorization'])
 
 def getEmbeddings():
 
