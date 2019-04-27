@@ -14,7 +14,6 @@ def hello():
     return "Chinese Embeddings"
 
 @app.route('/chineseEmbeddings', methods=['GET'])
-@cross_origin(origin='localhost',headers=['Content- Type','Authorization'])
 
 def getEmbeddings():
 
