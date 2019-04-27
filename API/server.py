@@ -5,7 +5,7 @@ import json
 from hanziconv import HanziConv
 
 import tools
-import zi_embedding, visual_embedding, word_embedding
+import zi_embedding, visual_embedding
 
 app = Flask(__name__)
 
@@ -63,18 +63,6 @@ def getEmbeddings():
         print("2:", result2)
         result = common_member(result1, result2)
         print("result:", result)
-
-    elif t == 'semantics_word':
-        print("[semantics_word]")
-        result = getSimilarResult(word_embedding.model, z)
-
-    print(result)
-
-    data = {
-    "type": t,
-    "target": z,
-    "result": result
-    }
 
     return json.dumps(data)
 
