@@ -78,4 +78,4 @@ def getEmbeddings():
     return json.dumps(data)
 
 if __name__ == "__main__":
-    app.run()
+    app.run(host="138.16.162.17", port=8084)
