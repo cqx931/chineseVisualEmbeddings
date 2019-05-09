@@ -1,5 +1,8 @@
 # -*- coding: utf-8 -*-
-#PYGAME_FREETYPE = True
+"""
+@author: cqx931
+2019
+"""
 import os
 import json
 import pygame
@@ -26,7 +29,6 @@ dic_c = {}
 def draw(c, idx, directory):
     # print(c,directory)
     pygame.init()
-    #font = pygame.font.Font("./fonts/NotoSansCJKsc-Black.otf", 36)
     font_t = ftfont.Font("fonts/NotoSansCJKtc-Regular.otf", 32)
     font_s = ftfont.Font("fonts/NotoSansCJKsc-Regular.otf", 32)
     rtext = font_t.render(c, True, (0, 0, 0), (255, 255, 255))
@@ -37,7 +39,7 @@ def draw(c, idx, directory):
 
     pygame.image.save(rtext, directory + str(idx) + ".jpg")
 
-# // create a clear csv file from the original dict file
+# create a clear csv file from the original dict file
 def generateCSV():
     # read manual edit
     rawDict = open("data/VC/dictionary.txt", "r")
@@ -68,7 +70,6 @@ def generateCSV():
 
             writer.writerow({'character': c, 'decomposition': d, 'radical':r})
 
-
 for idx,entry in enumerate(dict):
     count += 1
 
@@ -85,13 +86,11 @@ for idx,entry in enumerate(dict):
         d = entry["decomposition"]
         r = entry["radical"]
 
-    # draw(c , idx, "data/VC/img_all/")
+    draw(c , idx, "data/VC/img_all/")
 
     r = r.strip("\n")
     id2char[idx] = c
     char2id[c] = idx
-    # print(r)
-    # patterns = [d[0]]
     patterns = []
 
     # unclassifiable common ch
@@ -99,8 +98,6 @@ for idx,entry in enumerate(dict):
         patterns.append("口")
 
     if len(d) == 3 and "X" not in d:
-        # patterns.append(d[0] + "XX")
-
         ###### deal with traditional/simplified classes
         d = d.replace("鸟", "鳥")
         d = d.replace("马", "馬")
@@ -130,10 +127,6 @@ for idx,entry in enumerate(dict):
         # d = d.replace("夹", "夾")
         # d = d.replace("会", "會")
         # d = d.replace("争", "爭")
-        #
-        #
-
-
         # d = d.replace("韦", "韋")
         # 鹵
         ######
@@ -163,8 +156,8 @@ for idx,entry in enumerate(dict):
         d = d.replace("矢", "夫")
         d = d.replace("失", "夫")
         d = d.replace("必", "心")
-        d = d.replace("爰", "愛")
-        d = d.replace("主", "王")
+        # d = d.replace("爰", "愛")
+        # d = d.replace("主", "王")
 
         pattern1 = d[0]+ d[1] +"X"
         pattern2 = d[0]+ "X" + d[2]
@@ -179,14 +172,11 @@ for idx,entry in enumerate(dict):
         if d[0] == "⿰" and d[2] in "舌⺼風阝日土":
             pattern2 = d[0]+ d[2]
 
-        # ⿰几 ⿱几
+        radicals = "耂肀虍光予军用多食耳正臣谷缶彐是豆林爪瓦鹿音角云共旦羽豕果里止厶見毛母比鬼青辛非文韋立子十弓方又牛今車魚夫羊巾田酉隹米禾|馬足貝山石王目火女鳥虫言"
+        # The following candidates are not suitable for merging: 木口几
 
-        radicals = "耂肀虍光予军用多食耳正臣谷缶彐是豆林爪瓦鹿音角云共旦羽豕果里止厶見毛母比鬼青辛非文韋立子十弓方又牛今車魚夫羊巾田酉隹米禾|馬足貝山石王目火女鳥虫言日"
-        #土
-        # not possible merging candidates: 木口几
-
+        # Classify the following as component, ignore composition
         if d[1] in radicals and radicals.index(d[1]) > -1:
-            # classify the following as component, ignore composition
             current = radicals[radicals.index(d[1])]
             if d[1] == "车":
                 pattern1 = ("X車")
@@ -196,7 +186,6 @@ for idx,entry in enumerate(dict):
                 pattern1 = ("X" + current)
 
         if d[2] in radicals and radicals.index(d[2]) > -1:
-            # classify the following as component, ignore composition
             current = radicals[radicals.index(d[2])]
             if d[2] == "车":
                 pattern2 = ("X車")
@@ -220,7 +209,6 @@ for idx,entry in enumerate(dict):
             # 独体字
             patterns.append("口")
 
-
     for p in patterns:
         if p not in cat:
             cat[p] = [(idx,c)]
@@ -230,21 +218,20 @@ for idx,entry in enumerate(dict):
 
 print("CAT:",len(cat))
 
-# remove too detailed categories
+
 for r in list(cat.keys()):
+
     if "?" not in r and "？" not in r and len(cat[r]) > 10 and r is not "X":
+        # remove too detailed categories
         for idx, ch in cat[r] :
             if idx not in dic_c:
                 dic_c[idx] = ch
-        # remove radicales
     elif "正" in r or "父" in r or "龺" in r or "光" in r:
         # non frequent but common components
         for idx, ch in cat[r] :
             if idx not in dic_c:
                 dic_c[idx] = ch
     else:
-        # if len(cat[r]) == 12:
-        # print(r, len(cat[r]))
         del cat[r]
 
 # reorganize data
@@ -254,35 +241,32 @@ for c_i,c in enumerate(cat):
     # os.makedirs("img/"+ c)
     for idx, char in cat[c]:
         if idx not in data:
-            # print(str(c_i),char,c)
             data[char2id[char]] = (str(c_i),char,c)
         else:
             x, y, z = data[char2id[char]]
             data[char2id[char]] = (x + " " + str(c_i), char, z + " " + c)
 
-# print
-for w in sorted(cat, key=lambda k: len(cat[k]), reverse=False):
-  print(w, len(cat[w]))
+# print all labels
+# for w in sorted(cat, key=lambda k: len(cat[k]), reverse=False):
+#   print(w, len(cat[w]))
 
-# process
-# # TODO: recycle underrepresented data
-for idx in id2char:
-    if idx not in data:
-        print(id2char[idx])
-
-print("Cat:", len(cat))
+print("Categories:", len(cat))
 # # print(dic_c)
-print("Dic",len(dic_c),"/", count)
+print("Dictionary:",len(dic_c),"/", count)
 
-# format
-# charid : type id, type in unicode
+
+# Records:
 # Full v1: 295 categories 9574 characters
 # Full v2: 251 categories 9049 characters (remove some simplified ch)
 # Full v3: 250 categories 7852 characters (remove all X & radicales)
 # Final:   256 categories 9140/9585 characters
 # Final_v2:   256 categories 9416/9635 characters
 # Final_v2.1:   256 categories 9474/9635 characters
-# Final_v2.2: 256 categories 9477/9635 characters
+# Final_v2.2: 256 categories 9476/9635 characters
+
+# Format
+# charid : type id, type in unicode
+
 with open('full_' + str(len(cat)) + 'C.json', 'w') as outfile:
     json.dump(data, outfile)
     print("save to file")

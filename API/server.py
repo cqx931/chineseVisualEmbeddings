@@ -1,4 +1,7 @@
-# FLASK_APP=server.py flask run
+"""
+@author: cqx931
+2019
+"""
 
 from flask import Flask
 from flask_cors import CORS
