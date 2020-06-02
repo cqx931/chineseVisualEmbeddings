@@ -45,47 +45,10 @@ def testRelational():
     print(result2)
 
 if __name__ == "__main__":
-    # model = tools.loadModel('../embeddings/VC/visual_embedding_v3.txt')
-    # print(tools.getSimilarResult(model, '朴'))
-    # testSimilarByWord('爱')
-    # testSimilarByWord('可')
-    # testSimilarByWord('非')
-    # model = tools.loadModel('../embeddings/VC/visual_embedding_final_v2.txt')
-    # # print(tools.getSimilarResult(model, '朴'))
-    # print(tools.getSimilarResult(model, '閃'))
-    # print(tools.getSimilarResult(model, '正'))
-    # print(tools.getSimilarResult(model, '下'))
-    # print(tools.getSimilarResult(model, '一'))
-    #
-    # print("---------")
-    #
-    # model = tools.loadModel('../embeddings/VC/visual_embedding_final_v2.1.txt')
-    # # print(tools.getSimilarResult(model, '朴'))
-    # print(tools.getSimilarResult(model, '閃'))
-    # print(tools.getSimilarResult(model, '正'))
-    # print(tools.getSimilarResult(model, '下'))
-    # print(tools.getSimilarResult(model, '一'))
-
-    # model = tools.loadModel('../embeddings/VC/visual_embeddings_subset_v2.txt')
-    # # print(tools.getSimilarResult(model, '朴'))
-    # print(tools.getSimilarResult(model, '風'))
-    # print(tools.getSimilarResult(model, '正'))
-    # print(tools.getSimilarResult(model, '下'))
-    # print(tools.getSimilarResult(model, '一'))
-
     model = tools.loadModel('../embeddings/VC/subset/visual_embedding_subset_v2.1.txt')
     print(tools.getAnnoyIndex(model, '乙'));
-    # chainVisualSimilarity("字","")
-    # print(tools.getSimilarResult(model, '愛'))
-    # print(tools.getSimilarResult(model, '風'))
-    # print(tools.getSimilarResult(model, '正'))
 
-    # print(tools.getSimilarResult(model, '下'))
-    # print(tools.getSimilarResult(model, '一'))
-
-    # model = tools.loadModel('../embeddings/VC/visual_embedding_7351.txt')
-    # print(tools.getSimilarResult(model, '朴'))
 else:
-    model = tools.loadModel('../embeddings/VC/visual_embedding_final_v2.2.txt')
-    subset = tools.loadModel('../embeddings/VC/visual_embedding_subset_v2.2.txt')
+    # model = tools.loadModel('../embeddings/VC/final/visual_embedding_final_v2.2.txt')
+    subset = tools.loadModel('../embeddings/VC/subset/visual_embedding_subset_v2.2.txt')
     print("VISUAL Model loaded")

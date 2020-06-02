@@ -10,7 +10,7 @@ import json
 from hanziconv import HanziConv
 
 import tools
-import zi_embedding, visual_embedding
+import visual_embedding
 
 app = Flask(__name__)
 

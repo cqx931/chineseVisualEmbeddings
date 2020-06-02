@@ -253,7 +253,7 @@ for c_i,c in enumerate(cat):
 print("Categories:", len(cat))
 # # print(dic_c)
 print("Dictionary:",len(dic_c),"/", count)
-
+print(dic_c.values())
 
 # Records:
 # Full v1: 295 categories 9574 characters
@@ -266,12 +266,17 @@ print("Dictionary:",len(dic_c),"/", count)
 
 # Format
 # charid : type id, type in unicode
+with open('charset_' + str(len(cat)) + '.txt', 'w') as outfile:
+    outfile.write("".join(dic_c.values()))
+    print("save to file")
 
+exit()
 with open('full_' + str(len(cat)) + 'C.json', 'w') as outfile:
     json.dump(data, outfile)
     print("save to file")
 
 writer = tsv.TsvWriter(open("v3_meta.tsv", "w"))
+
 for idx, entry in enumerate(data):
     writer.line(str(idx) + "\t" + id2char[entry])
 writer.close()
