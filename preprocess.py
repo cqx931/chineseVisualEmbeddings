@@ -15,7 +15,6 @@ import re
 import sys
 
 from fontTools.ttLib import TTFont
-from fontTools.unicode import Unicode
 
 # based on the csv, all characters and its id
 char2id = {}
@@ -49,35 +48,34 @@ def draw(c, idx, directory):
     rtext = pygame.transform.scale(rtext, (32, 32))
 
     pygame.image.save(rtext, directory + str(idx) + ".jpg")
+    return True
 
 def drawImages():
     pygame.init()
-    # same image size, better quality
     dict = open("data/VC/dict.csv", "r")
     c_image = 0
     missing = []
 
     if not os.path.exists('data/VC/img_all/'):
         os.makedirs('data/VC/img_all/')
-
+    print("Generating Images:")
     for idx,entry in enumerate(dict):
         items = entry.split(',')
-        unicode = items[2].replace("\n","")
         valid = draw(items[0], idx, "data/VC/img_all/")
         if valid:
             c_image +=1
         else:
             missing.append(idx)
-        if idx%100 == 0:
+        if idx%500 == 0:
             print(idx)
     print("Total images generated:", c_image)
-    print("Missing:", missing)
+    print("Missing:", len(missing))
 
 # create a clear csv file from the original dict file
 def generateCSV():
-    raw_dict = open("data/VC/dict_fix.csv", "r")
-    with open('data/VC/dict.csv', 'w') as csvfile:
-        fieldnames = ['character', 'decomposition','unicode']
+    raw_dict = open("data/VC/dict.csv", "r")
+    with open('data/VC/new_dict.csv', 'w') as csvfile:
+        fieldnames = ['character', 'decomposition','radical']
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
         # writer.writeheader()
         for idx,entry in enumerate(raw_dict):
@@ -105,7 +103,7 @@ def generateCSV():
                 d = d[0] + d[1] + "?"
             elif len(d) > 4:
                 d = d[0] + "?" + d[len(d)-1]
-            {'character': c, 'decomposition': d, 'radical':r}
+            writer.writerow({'character': c, 'decomposition': d, 'radical':r})
 
 def simplifyDecomposition(d):
     ###### deal with traditional/simplified classes
@@ -183,7 +181,7 @@ def getMostCommonCh():
 
 def getRefCSV():
     ref = {}
-    with open('data/VC/dict_fix.csv', mode='r') as infile:
+    with open('data/VC/dict.csv', mode='r') as infile:
         reader = csv.reader(infile)
         for rows in reader:
             ref[rows[0]] = rows[1]
@@ -305,7 +303,7 @@ def renderData():
 
 def postProcess():
     count = 0
-    csv = open('data/VC/dict_fix.csv', "r")
+    csv = open('data/VC/dict.csv', "r")
     for idx,entry in enumerate(csv):
         count += 1
         entry = entry.split(',')
@@ -367,6 +365,7 @@ def main():
     if len(sys.argv) > 1 and sys.argv[1] == "-img":
         generateCSV()
         drawImages()
+        postProcess()
     else:
         generateCSV()
         postProcess()

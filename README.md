@@ -12,7 +12,7 @@ It is part of a larger project [Graphein](https://chenqianxun.com/graphein/index
 - Install all the packages `pip3 install -r requirements.txt`
 
 #### STEP 1 Prepare the data
-`python preprocess.py`
+`python preprocess.py -img`
 
 #### STEP 2 Train embeddings
 - An earlier version of the embeddings was trained with `python CNN.py`

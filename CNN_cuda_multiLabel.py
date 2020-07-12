@@ -134,7 +134,8 @@ def main(args):
 
     optimizer = torch.optim.Adam(cnn.parameters(), lr=LR)   # optimize all cnn parameters
     loss_func = nn.BCEWithLogitsLoss()
-    # Alternatives: Try Focal Lost for imbalanced data: https://gombru.github.io/2018/05/23/cross_entropy_loss/
+    # OR Hamming Loss
+    # Alternatives: Focal Lost for imbalanced data: https://gombru.github.io/2018/05/23/cross_entropy_loss/
     # Also see: https://discuss.pytorch.org/t/how-to-implement-focal-loss-in-pytorch/6469/17
 
     ##### STEP 2: Data set #####
@@ -167,9 +168,9 @@ def main(args):
                     test_x = test_x.cuda()
                 test_output, last_layer = cnn(test_x)
 
-                # pred_y = torch.max(test_output.cpu(), 1)[1].data.numpy()
+                pred_y = torch.max(test_output.cpu(), 1)[1].data.numpy()
                 # TODO: how to calculate accuracy for multi label classification?
-                # print(pred_y)
+                print(pred_y)
                 # accuracy = float(correct) / float(test_y.size(0))
 
                 print('Epoch: ', epoch, step, '| train loss: %.4f' % loss.data.cpu().numpy())
