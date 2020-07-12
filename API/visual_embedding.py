@@ -46,15 +46,8 @@ def testRelational():
 
 if __name__ == "__main__":
     model = tools.loadModel('../embeddings/VC/v3.2/v3.2_embeddings.txt')
-    model2 = tools.loadModel('../embeddings/VC/v3.2/v3.2_embeddings_subset.txt')
-    print(tools.getAnnoyIndex(model, '十'));
-    print(tools.getAnnoyIndex(model2, '十'));
-    print(tools.getAnnoyIndex(model, '乙'));
-    print(tools.getAnnoyIndex(model2, '乙'));
-    print(tools.getAnnoyIndex(model, '文'));
     print(tools.getAnnoyIndex(model2, '情'));
 
 else:
-    # model = tools.loadModel('../embeddings/VC/final/visual_embedding_final_v2.2.txt')
-    subset = tools.loadModel('../embeddings/VC/subset/visual_embedding_subset_v2.2.txt')
+    model = tools.loadModel('../embeddings/VC/embeddings_v3.2.txt')
     print("VISUAL Model loaded")
