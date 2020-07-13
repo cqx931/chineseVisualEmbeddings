@@ -37,19 +37,19 @@ class CustomDatasetFromImages(Dataset):
             labels_int = []
             for label in labels:
                 labels_int.append(int(label))
-            labels_list.append(torch.FloatTensor(labels_int))
+            labels_list.append(labels_int)
 
             img_as_img = Image.open("data/VC/img_all/" + str(idx) +".jpg")
             img_as_img = img_as_img.convert('1')
             img_as_tensor = self.to_tensor(img_as_img)
             image_list.append(img_as_tensor)
-        # print(self.labels)
 
         self.data_len = len(self.data)
         self.image_tensors = torch.Tensor(self.data_len, 32, 32)
         torch.cat(image_list, out=self.image_tensors)
 
-        self.labels = torch.Tensor(self.data_len, 2) # 2 labels
+        self.labels = labels_list
+
         if is_cuda:
             self.image_tensors.cuda()
             self.labels.cuda()
@@ -83,7 +83,7 @@ class CustomDatasetFromImages(Dataset):
         return self.data_len
 
 # Hyper Parameters
-EPOCH = 1
+EPOCH = 19
 BATCH_SIZE = 64
 LR = 1e-3 # learning rate
 
@@ -148,7 +148,7 @@ def main(args):
 
     all_x = Variable(torch.unsqueeze(all_data.image_tensors, dim=1)).type(torch.FloatTensor)
     test_x = Variable(torch.unsqueeze(test_data.image_tensors, dim=1)).type(torch.FloatTensor)
-    test_y = Variable(torch.unsqueeze(test_data.labels, dim=1)).type(torch.FloatTensor)
+    # test_y = Variable(torch.unsqueeze(test_data.labels, dim=1)).type(torch.FloatTensor)
 
     ##### STEP 3: Training and testing #####
     for epoch in range(EPOCH):
@@ -163,18 +163,21 @@ def main(args):
             loss.backward()                 # backpropagation, compute gradients
             optimizer.step()                # apply gradients
 
-            if step % 50 == 0:
+            if step % 50 == 0 or step == 148:
                 if is_cuda:
                     test_x = test_x.cuda()
                 test_output, last_layer = cnn(test_x)
 
                 pred_y = torch.max(test_output.cpu(), 1)[1].data.numpy()
-                # TODO: how to calculate accuracy for multi label classification?
-                print(pred_y)
-                # accuracy = float(correct) / float(test_y.size(0))
 
-                print('Epoch: ', epoch, step, '| train loss: %.4f' % loss.data.cpu().numpy())
-                # print('Epoch: ', epoch, step, '| train loss: %.4f' % loss.data.cpu().numpy(), '| test accuracy: %.2f' % accuracy)
+                correct = 0
+                for i in range(len(test_data.labels)):
+                    labels = test_data.labels[i]
+                    if (pred_y[i] in labels):
+                        correct += 1
+
+                accuracy = float(correct) / float(len(test_data.labels))
+                print('Epoch: ', epoch, step, '| train loss: %.4f' % loss.data.cpu().numpy(), '| test accuracy: %.3f' % accuracy)
 
         if is_cuda:
             all_x = all_x.cuda()
@@ -199,18 +202,16 @@ def main(args):
     writer.close()
     print("Embedding saved")
 
-    # print 10 predictions from test data
-    test_output, _ = cnn(test_x[:10])
-    pred_y = torch.max(test_output, 1)[1].data.numpy()
-    print(pred_y, 'prediction number')
-    print(test_y[:10].numpy(), 'real number')
-
 if __name__ == '__main__':
 
     parser = argparse.ArgumentParser()
-    parser.add_argument("--data", type=str, help="path to data file", default="data/VC/v3.2/v3.2_256C.json")
-    parser.add_argument("--testData", type=str, help="path to test data file", default="data/VC/v3.2/v3.2_256C.json")
+    parser.add_argument("--data", type=str, help="path to data file", default="data/VC/training_data.json")
+    parser.add_argument("--testData", type=str, help="path to test data file", default="data/VC/training_data.json")
     parser.add_argument("--output", type=str, help="output file name", default="embeddings.tsv")
     args = parser.parse_args()
 
     main(args)
+
+# EPOCH 10 accuracy:0.91
+# EPOCH 15 accuracy:0.99
+# EPOCH 19 accuracy:1, train loss: 0.0001
