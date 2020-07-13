@@ -18,7 +18,7 @@ cors = CORS(app, resources={r"/chineseEmbeddings": {"origins": "*"}})
 
 @app.route("/")
 def hello():
-    return "Chinese Embeddings"
+    return "Chinese Embeddings:v1.0.1"
 
 @app.route('/chineseEmbeddings', methods=['GET'])
 # @cross_origin(origin='*',headers=['Content- Type','Authorization'])
